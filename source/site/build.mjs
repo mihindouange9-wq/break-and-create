@@ -31,7 +31,9 @@ const html = `<!doctype html>
 <meta name="theme-color" content="#171717">
 <meta property="og:title" content="BREAK &amp; CREATE — Break the routine. Create the moment.">
 <meta property="og:description" content="Destination d’expériences créatives et immersives à Libreville : Paint Room et Release Room.">
-<meta property="og:image" content="assets/img/hero-visage-1600.webp">
+<meta property="og:image" content="https://break-and-create.onrender.com/assets/img/hero-visage-1600.webp">
+<meta property="og:url" content="https://break-and-create.onrender.com/">
+<link rel="canonical" href="https://break-and-create.onrender.com/">
 <meta property="og:locale" content="fr_GA">
 <link rel="preload" as="image" imagesrcset="assets/img/hero-visage-800.webp 800w, assets/img/hero-visage-1600.webp 1600w" imagesizes="(max-width: 760px) 100vw, 50vw">
 <link rel="stylesheet" href="assets/css/site.css">
