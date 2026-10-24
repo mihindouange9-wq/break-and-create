@@ -4,6 +4,9 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { marque, experiences, formatFcfa, scenes, photos } from './donnees.mjs';
 import { motSymbole, symbole, sequence, fragments, trace, eclaboussure, hachures, logoAura } from '../lib.mjs';
+
+/* Version des fichiers JS/CSS : change à chaque génération pour contourner le cache navigateur (assets servis en cache longue durée). */
+const VERSION = new Date().toISOString().slice(0, 16).replace(/[-:T]/g, '');
 const motif = (svg, classe, anim) => `<div class="motif ${classe}" data-motif="${anim}" aria-hidden="true">${svg}</div>`;
 
 const ICI = dirname(fileURLToPath(import.meta.url));
@@ -36,7 +39,7 @@ const html = `<!doctype html>
 <link rel="canonical" href="https://break-and-create.onrender.com/">
 <meta property="og:locale" content="fr_GA">
 <link rel="preload" as="image" imagesrcset="assets/img/hero-visage-800.webp 800w, assets/img/hero-visage-1600.webp 1600w" imagesizes="(max-width: 760px) 100vw, 50vw">
-<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/site.css?v=${VERSION}">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 </head>
 <body>
@@ -274,7 +277,7 @@ const html = `<!doctype html>
 <script src="assets/vendor/gsap.min.js" defer></script>
 <script src="assets/vendor/ScrollTrigger.min.js" defer></script>
 <script src="assets/vendor/lenis.min.js" defer></script>
-<script src="assets/js/app.js" defer></script>
+<script src="assets/js/app.js?v=${VERSION}" defer></script>
 </body>
 </html>`;
 await writeFile(join(SITE, 'index.html'), html);

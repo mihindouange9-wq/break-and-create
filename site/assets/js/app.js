@@ -164,6 +164,13 @@ function scenes() {
     const gouttiere = () => parseFloat(getComputedStyle(q('.experiences')).paddingLeft) || 0;
     const distance = () => Math.max(0, piste.scrollWidth - window.innerWidth + gouttiere() * 2);
     gsap.to(piste, { x: () => -distance(), ease: 'none', scrollTrigger: { trigger: '.experiences', start: 'top 8%', end: () => '+=' + distance(), pin: true, scrub: .8, anticipatePin: 1, invalidateOnRefresh: true } });
+    // molette ou pavé tactile en horizontal sur la section : le geste latéral fait avancer la piste (converti en défilement vertical)
+    q('.experiences').addEventListener('wheel', (ev) => {
+      if (Math.abs(ev.deltaX) <= Math.abs(ev.deltaY)) return;
+      ev.preventDefault();
+      const cible = window.scrollY + ev.deltaX;
+      if (window.lenis) window.lenis.scrollTo(cible, { duration: .4 }); else window.scrollTo(0, cible);
+    }, { passive: false });
   } else if (piste) {
     qa('.experience', piste).forEach((c) => gsap.from(c, { y: 40, opacity: 0, duration: .8, scrollTrigger: { trigger: c, start: 'top 90%', once: true } }));
   }
