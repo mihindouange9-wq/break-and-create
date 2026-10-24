@@ -135,11 +135,12 @@ body[data-fond="orange"] .scene-num, body[data-fond="blanc"] .scene-num { color:
 .trait-transition { position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; background: var(--orange); transform: scaleX(0); transform-origin: left; }
 
 /* expériences */
-.experiences { padding-bottom: 0; overflow: hidden; }
+.experiences { min-height: 100svh; display: flex; flex-direction: column; justify-content: center; padding-top: clamp(72px, 9vh, 120px); padding-bottom: clamp(24px, 4vh, 56px); overflow: hidden; }
+.experiences .titre-scene { font-size: min(clamp(40px, 6.6vw, 104px), 8vh); }
 .experiences-tete { max-width: 900px; }
-.experiences-aide { margin-top: 20px; color: var(--avant-2); font-size: 16px; }
-.experiences-piste { display: flex; gap: 24px; margin-top: 56px; padding-bottom: clamp(80px, 12vw, 160px); }
-.experience { position: relative; flex: 0 0 min(420px, 78vw); min-height: 560px; padding: 28px; border: 1px solid rgba(23, 23, 23, .16); border-radius: 6px; display: grid; align-content: end; gap: 10px; overflow: hidden; background: var(--blanc); color: var(--encre); isolation: isolate; }
+.experiences-aide { margin-top: clamp(10px, 1.6vh, 20px); color: var(--avant-2); font-size: 16px; }
+.experiences-piste { display: flex; gap: 24px; margin-top: clamp(20px, 3.5vh, 56px); padding-bottom: 0; }
+.experience { position: relative; flex: 0 0 min(420px, 78vw, max(300px, (100svh - 330px) * 0.76)); min-height: 0; height: clamp(400px, 100svh - 330px, 560px); container-type: inline-size; padding: 28px; border: 1px solid rgba(23, 23, 23, .16); border-radius: 6px; display: grid; align-content: end; gap: 10px; overflow: hidden; background: var(--blanc); color: var(--encre); isolation: isolate; }
 .experience-visuel { position: absolute; inset: 0; z-index: 0; clip-path: inset(0 0 46% 0); filter: grayscale(1); transition: clip-path .7s cubic-bezier(.2, .7, .2, 1), filter .5s ease; }
 .experience-visuel::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(23, 23, 23, .85) 0%, rgba(23, 23, 23, .2) 55%, rgba(23, 23, 23, .05)); opacity: 0; transition: opacity .5s; }
 .experience-visuel picture { height: 100%; }
@@ -151,8 +152,8 @@ body[data-fond="orange"] .scene-num, body[data-fond="blanc"] .scene-num { color:
 .experience--create:not(:hover):not(.est-active) .experience-num { color: var(--noir); }
 .experience--break { background: var(--noir); color: #fff; border-color: var(--noir); }
 .experience--both { background: var(--orange); color: var(--noir); border-color: var(--orange); }
-.experience-nom { font-size: clamp(32px, 3vw, 44px); }
-.experience-accroche { font-family: var(--titrage); font-weight: 500; font-size: 18px; line-height: 1.35; }
+.experience-nom { font-size: clamp(26px, 10cqi, 44px); }
+.experience-accroche { font-family: var(--titrage); font-weight: 500; font-size: clamp(15px, 5.2cqi, 18px); line-height: 1.35; }
 .experience-infos { display: flex; flex-wrap: wrap; gap: 6px 18px; font-family: var(--titrage); font-weight: 700; font-size: 15px; }
 .experience-infos span:first-child { white-space: nowrap; }
 .experience-infos small { font-weight: 400; font-size: 13px; opacity: .8; }
@@ -311,7 +312,10 @@ body[data-fond="orange"] .scene-num, body[data-fond="blanc"] .scene-num { color:
   .step-out-photo { position: static; transform: none; width: 80%; margin-top: 40px; }
   .titre-scene { font-size: clamp(36px, 11vw, 64px); max-width: none; }
   .experiences-piste { flex-direction: column; gap: 14px; }
-  .experience { flex: none; min-height: 0; padding: 22px; }
+  .experiences { min-height: 0; display: block; padding-top: clamp(80px, 12vw, 160px); padding-bottom: 0; }
+  .experiences .titre-scene { font-size: clamp(36px, 11vw, 64px); }
+  .experiences-piste { margin-top: 40px; padding-bottom: clamp(80px, 12vw, 160px); }
+  .experience { flex: none; min-height: 0; height: auto; padding: 22px; }
   .experience-visuel { clip-path: none; filter: none; position: relative; aspect-ratio: 16 / 10; margin: 0 -22px 14px; width: calc(100% + 44px); }
   .experience-visuel::after { display: none; }
   .experience-num { position: static; }
@@ -353,7 +357,7 @@ body[data-fond="orange"] .scene-num, body[data-fond="blanc"] .scene-num { color:
 .motif--heros { left: 34%; top: 46%; width: min(20vw, 280px); z-index: 1; }
 .motif--trace-step { left: 0; right: 0; bottom: -10px; width: 100%; }
 .motif--trace-step svg { height: 60px; width: 100%; }
-.motif--exp { right: var(--gouttiere); top: clamp(80px, 12vw, 160px); width: min(22vw, 320px); }
+.motif--exp { right: var(--gouttiere); top: clamp(60px, 8vh, 120px); width: min(22vw, 320px, 28vh); }
 .motif--zoom { width: min(40vw, 520px); left: 50%; top: 50%; transform: translate(-50%, -50%); }
 .motif--trace-create { position: relative; width: min(60%, 420px); margin: 10px 0 0; }
 .motif--trace-create svg { height: 40px; }
@@ -401,4 +405,6 @@ body[data-fond="orange"] .scene-num, body[data-fond="blanc"] .scene-num { color:
 }
 @media (prefers-reduced-motion: reduce) { .motif { opacity: 1 !important; } .motif * { transform: none !important; opacity: 1 !important; } }
 
-.create, .release, .reserver, .zoom { overflow: hidden; }
+.create, .release, .reserver { overflow: hidden; }
+/* overflow: clip et non hidden : hidden crée un conteneur de défilement qui empêche le mot collant de rester à l'écran */
+.zoom { overflow: clip; }

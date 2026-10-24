@@ -163,7 +163,7 @@ function scenes() {
     // la gouttière est un clamp() : on lit le padding résolu en pixels de la scène, jamais la variable brute (parseFloat donnerait NaN)
     const gouttiere = () => parseFloat(getComputedStyle(q('.experiences')).paddingLeft) || 0;
     const distance = () => Math.max(0, piste.scrollWidth - window.innerWidth + gouttiere() * 2);
-    gsap.to(piste, { x: () => -distance(), ease: 'none', scrollTrigger: { trigger: '.experiences', start: 'top 8%', end: () => '+=' + distance(), pin: true, scrub: .8, anticipatePin: 1, invalidateOnRefresh: true } });
+    gsap.to(piste, { x: () => -distance(), ease: 'none', scrollTrigger: { trigger: '.experiences', start: 'top top', end: () => '+=' + distance(), pin: true, scrub: .8, anticipatePin: 1, invalidateOnRefresh: true } });
     // molette ou pavé tactile en horizontal sur la section : le geste latéral fait avancer la piste (converti en défilement vertical)
     q('.experiences').addEventListener('wheel', (ev) => {
       if (Math.abs(ev.deltaX) <= Math.abs(ev.deltaY)) return;
@@ -179,7 +179,9 @@ function scenes() {
 
   /* zoom : le mot CREATE grandit jusqu'à remplir l'écran, puis la scène orange arrive */
   gsap.set('.zoom-mot', { position: 'relative', zIndex: 1 });
-  gsap.fromTo('.zoom-mot', { scale: .6, opacity: 0 }, { scale: 14, opacity: 1, ease: 'power2.in', scrollTrigger: { trigger: '.zoom', start: 'top 80%', end: 'bottom top', scrub: .5 } });
+  // le mot est visible dès l'entrée (opacité acquise sur le premier tiers), puis grandit jusqu'à remplir l'écran
+  gsap.fromTo('.zoom-mot', { opacity: 0 }, { opacity: 1, ease: 'power1.out', scrollTrigger: { trigger: '.zoom', start: 'top 80%', end: 'top 30%', scrub: .5 } });
+  gsap.fromTo('.zoom-mot', { scale: .6 }, { scale: 14, ease: 'power2.in', scrollTrigger: { trigger: '.zoom', start: 'top 80%', end: 'bottom top', scrub: .5 } });
 
   /* release : les mots se décalent au défilement, comme des coups */
   gsap.from('.release-mots li', { x: -30, opacity: 0, stagger: .12, duration: .7, scrollTrigger: { trigger: '.release-mots', start: 'top 85%', once: true } });
@@ -217,7 +219,8 @@ function scenes() {
   });
   qa('[data-motif="hachures"]').forEach((m) => gsap.fromTo(m, { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0 0 0)', duration: 1.2, ease: 'power2.out', scrollTrigger: { trigger: m, start: 'top 100%', once: true } }));
   /* la tache du zoom grandit avec le mot */
-  gsap.fromTo('.motif--zoom', { scale: .3, opacity: 0 }, { scale: 4, opacity: 1, ease: 'power2.in', scrollTrigger: { trigger: '.zoom', start: 'top 80%', end: 'bottom top', scrub: .5 } });
+  gsap.fromTo('.motif--zoom', { opacity: 0 }, { opacity: .28, ease: 'power1.out', scrollTrigger: { trigger: '.zoom', start: 'top 80%', end: 'top 30%', scrub: .5 } });
+  gsap.fromTo('.motif--zoom', { scale: .3 }, { scale: 4, ease: 'power2.in', scrollTrigger: { trigger: '.zoom', start: 'top 80%', end: 'bottom top', scrub: .5 } });
 
   /* pied : le mot-symbole final se révèle */
   gsap.from('.pied-marque', { yPercent: 30, opacity: 0, duration: 1.2, ease: 'expo.out', scrollTrigger: { trigger: '.pied', start: 'top 70%', once: true } });
