@@ -160,7 +160,9 @@ function scenes() {
   /* expériences : piste horizontale épinglée sur ordinateur, liste verticale sur téléphone */
   const piste = q('[data-piste]');
   if (!mobile && piste) {
-    const distance = () => piste.scrollWidth - window.innerWidth + parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--gouttiere')) * 2;
+    // la gouttière est un clamp() : on lit le padding résolu en pixels de la scène, jamais la variable brute (parseFloat donnerait NaN)
+    const gouttiere = () => parseFloat(getComputedStyle(q('.experiences')).paddingLeft) || 0;
+    const distance = () => Math.max(0, piste.scrollWidth - window.innerWidth + gouttiere() * 2);
     gsap.to(piste, { x: () => -distance(), ease: 'none', scrollTrigger: { trigger: '.experiences', start: 'top 8%', end: () => '+=' + distance(), pin: true, scrub: .8, anticipatePin: 1, invalidateOnRefresh: true } });
   } else if (piste) {
     qa('.experience', piste).forEach((c) => gsap.from(c, { y: 40, opacity: 0, duration: .8, scrollTrigger: { trigger: c, start: 'top 90%', once: true } }));
