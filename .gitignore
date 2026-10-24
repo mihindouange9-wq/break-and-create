@@ -1,0 +1,6 @@
+site-partage/
+tools/captures/
+tools/captures-site/
+*.log
+.DS_Store
+Thumbs.db
