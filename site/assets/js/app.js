@@ -4,7 +4,6 @@
    Tout se dégrade proprement : mouvement réduit → contenu statique ; écran tactile → pas de curseur ni de survol. */
 const reduit = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const fin = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-const mobile = window.matchMedia('(max-width: 760px)').matches;
 const q = (s, r = document) => r.querySelector(s);
 const qa = (s, r = document) => Array.from(r.querySelectorAll(s));
 
@@ -26,10 +25,10 @@ function fonds() {
 function menu() {
   const bouton = q('[data-menu]'), panneau = q('#menu');
   if (!bouton || !panneau) return;
-  const fermer = () => { panneau.hidden = true; bouton.setAttribute('aria-expanded', 'false'); document.body.classList.remove('menu-ouvert'); window.lenis && window.lenis.start(); };
+  const fermer = () => { panneau.hidden = true; bouton.setAttribute('aria-expanded', 'false'); bouton.setAttribute('aria-label', 'Ouvrir le menu'); document.body.classList.remove('menu-ouvert'); window.lenis && window.lenis.start(); };
   bouton.addEventListener('click', () => {
     const ouvert = panneau.hidden;
-    panneau.hidden = !ouvert; bouton.setAttribute('aria-expanded', String(ouvert)); document.body.classList.toggle('menu-ouvert', ouvert);
+    panneau.hidden = !ouvert; bouton.setAttribute('aria-expanded', String(ouvert)); bouton.setAttribute('aria-label', ouvert ? 'Fermer le menu' : 'Ouvrir le menu'); document.body.classList.toggle('menu-ouvert', ouvert);
     if (window.lenis) ouvert ? window.lenis.stop() : window.lenis.start();
     if (ouvert && window.gsap && !reduit) gsap.from(qa('#menu nav a'), { y: 30, opacity: 0, stagger: .06, duration: .6, ease: 'power3.out' });
   });
@@ -68,6 +67,8 @@ function magnetique() {
 function formulaire() {
   const f = q('[data-formulaire]'); if (!f) return;
   const etat = q('[data-etat]', f);
+  const champDate = q('input[name=date]', f);
+  if (champDate) { const j = new Date(); champDate.min = `${j.getFullYear()}-${String(j.getMonth() + 1).padStart(2, '0')}-${String(j.getDate()).padStart(2, '0')}`; }
   qa('[data-experience]').forEach((a) => a.addEventListener('click', () => { const s = q('select[name=experience]', f); if (s) s.value = a.dataset.experience; }));
   f.addEventListener('submit', (ev) => {
     ev.preventDefault();
@@ -108,7 +109,10 @@ function scenes() {
   /* fonds et en-tête qui se cache en descendant */
   const majFond = fonds();
   let dernierY = 0;
-  ScrollTrigger.create({ onUpdate: (st) => { majFond(); const y = st.scroll(); entete.classList.toggle('est-cache', y > 200 && y > dernierY && !document.body.classList.contains('menu-ouvert')); dernierY = y; } });
+  // sur l'événement de défilement lui-même : un ScrollTrigger sans déclencheur garde une fin périmée quand la hauteur de page change, et le fond ne suivait plus
+  const surDefilement = () => { majFond(); const y = window.scrollY; entete.classList.toggle('est-cache', y > 200 && y > dernierY && !document.body.classList.contains('menu-ouvert')); dernierY = y; };
+  window.addEventListener('scroll', surDefilement, { passive: true });
+  ScrollTrigger.addEventListener('refresh', majFond);
 
   /* rideau d'ouverture : le mot-symbole apparaît, la fracture claque, le rideau glisse */
   const rideau = q('#rideau');
@@ -159,21 +163,26 @@ function scenes() {
 
   /* expériences : piste horizontale épinglée sur ordinateur, liste verticale sur téléphone */
   const piste = q('[data-piste]');
-  if (!mobile && piste) {
+  const formats = gsap.matchMedia();
+  if (piste) formats.add('(min-width: 761px) and (min-height: 640px)', () => {
     // la gouttière est un clamp() : on lit le padding résolu en pixels de la scène, jamais la variable brute (parseFloat donnerait NaN)
     const gouttiere = () => parseFloat(getComputedStyle(q('.experiences')).paddingLeft) || 0;
     const distance = () => Math.max(0, piste.scrollWidth - window.innerWidth + gouttiere() * 2);
     gsap.to(piste, { x: () => -distance(), ease: 'none', scrollTrigger: { trigger: '.experiences', start: 'top top', end: () => '+=' + distance(), pin: true, scrub: .8, anticipatePin: 1, invalidateOnRefresh: true } });
     // molette ou pavé tactile en horizontal sur la section : le geste latéral fait avancer la piste (converti en défilement vertical)
-    q('.experiences').addEventListener('wheel', (ev) => {
+    const lateral = (ev) => {
       if (Math.abs(ev.deltaX) <= Math.abs(ev.deltaY)) return;
       ev.preventDefault();
       const cible = window.scrollY + ev.deltaX;
       if (window.lenis) window.lenis.scrollTo(cible, { duration: .4 }); else window.scrollTo(0, cible);
-    }, { passive: false });
-  } else if (piste) {
+    };
+    q('.experiences').addEventListener('wheel', lateral, { passive: false });
+    return () => q('.experiences').removeEventListener('wheel', lateral);
+  });
+  /* téléphone, ou écran trop bas pour épingler : les cartes (en colonne ou en grille) montent une à une */
+  if (piste) formats.add('(max-width: 760px), (max-height: 639px)', () => {
     qa('.experience', piste).forEach((c) => gsap.from(c, { y: 40, opacity: 0, duration: .8, scrollTrigger: { trigger: c, start: 'top 90%', once: true } }));
-  }
+  });
   /* clavier et tactile : une carte se « survole » au focus ou au toucher */
   qa('.experience').forEach((c) => { c.addEventListener('focusin', () => c.classList.add('est-active')); c.addEventListener('focusout', () => c.classList.remove('est-active')); c.addEventListener('touchstart', () => { qa('.experience.est-active').forEach((o) => o !== c && o.classList.remove('est-active')); c.classList.toggle('est-active'); }, { passive: true }); });
 
@@ -240,8 +249,14 @@ function statique() {
   window.addEventListener('scroll', fonds(), { passive: true });
 }
 
+/* ---------- crédits photos : le lien du pied ouvre le volet ---------- */
+function credits() {
+  const volet = q('#credits');
+  if (volet) qa('[data-credits]').forEach((a) => a.addEventListener('click', () => { volet.open = true; }));
+}
+
 function demarrer() {
-  menu(); formulaire();
+  menu(); formulaire(); credits();
   if (reduit || !window.gsap || !window.ScrollTrigger) { statique(); return; }
   scenes(); curseur(); magnetique();
 }

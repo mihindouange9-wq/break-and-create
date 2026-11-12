@@ -55,3 +55,21 @@ node tools/images.mjs             # reconvertit les photos en WebP après un ajo
 ## Publication
 
 Dépôt GitHub public https://github.com/mihindouange9-wq/break-and-create. `render.yaml` décrit un site statique Render servi directement depuis `site/` (aucune compilation) ; `tools/render-deploy.mjs` crée ou redéploie le service par l'API (`RENDER_API_KEY=rnd_… node tools/render-deploy.mjs`), car un push sur `main` ne redéploie pas forcément. Le dossier `site-partage/` n'est pas versionné (copie de `site/` sans `credits.json`).
+
+## Le film (`video/`)
+
+Film de présentation de 36 s en 1920 × 1080, généré depuis la charte : `source/video/build.mjs` écrit `video/scene.html`
+(sept plans sur une ligne de temps GSAP exposée par `window.seek`, polices, photos et logos du site), `tools/video-render.mjs`
+capture chaque image dans Chrome puis encode en MP4 H.264 + AAC par WebCodecs (`video/encodeur.html`, bande-son synthétisée :
+pulsation, nappe, quatre coups sur le Release Room). ffmpeg étant bloqué sur ce poste, tout passe par Chrome.
+
+```
+node source/video/build.mjs               # régénère la scène
+node tools/video-render.mjs --apercu      # planche-contact des images clés : video/apercu.jpg
+node tools/video-render.mjs               # rendu complet → livrables/BREAK-AND-CREATE-film-36s-1080p.mp4 et -720p.mp4 (+ affiche)
+```
+
+Plans : 1 séquence BREAK → CREATE et logo · 2 le constat (« Sortir de la routine ») · 3 Paint Room (orange) · 4 Release Room
+(noir, quatre coups) · 5 sept expériences et tarifs · 6 Akanda, réservation WhatsApp · 7 signature et collaboration MÉTHODE AURA.
+Le rendu complet dure plusieurs minutes : le lancer en tâche détachée (Start-Process) et suivre `video/.rendu/journal.txt` ;
+`--reprendre` garde les images déjà capturées. Les livrables ne sont pas versionnés.

@@ -60,7 +60,7 @@ const html = `<!doctype html>
   <a class="bouton bouton--orange bouton--petit" href="#reserver" data-magnetique data-curseur="RÉSERVER">Réserver</a>
   <button class="entete-menu" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="menu" data-menu><span></span><span></span></button>
 </header>
-<div class="menu" id="menu" hidden>
+<div class="menu" id="menu" hidden data-lenis-prevent>
   <nav aria-label="Menu">
     <a href="#experiences">Expériences</a><a href="#create">Paint Room</a><a href="#release">Release Room</a><a href="#pourquoi">Pourquoi</a><a href="#libreville">Libreville</a><a href="#tarifs">Tarifs</a><a href="#reserver">Réserver</a>
   </nav>
